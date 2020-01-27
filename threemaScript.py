@@ -2,6 +2,17 @@
 
 import sys
 import re
+import os
+
+from threema.gateway import (
+    Connection,
+    GatewayError,
+    util,
+)
+from threema.gateway.simple import TextMessage
+
+from dotenv import load_dotenv
+load_dotenv()
 
 def helloWorld(text):
     return text
@@ -43,13 +54,37 @@ def createThreemaMessage(sachverhalt, ort):
     message = sachverhalt + "\n" + ort
     return message
 
-def sendThreemaMessage(message):
-    print("sending Threema message: " + message)
+def sendThreemaMessage(connection, message):
+    threemaMessage = TextMessage(
+        connection=connection,
+        to_id='4JTDMYFC',
+        text=message
+    )
+    return threemaMessage.send()
+
+def loadUsers(filePath):
+    users = list()
+    with open(filePath) as f:
+        for line in f:
+            users.append(line[0:8])
+    return users
 
 
 if __name__ == '__main__':
     fileContent = readFileContent(getFileName())
     sachverhalt = extractSachverhalt(fileContent)
     ort = extractOrt(fileContent)
+    users = loadUsers(os.getenv("FILE_TO_LIST_OF_USERS"))
     message = createThreemaMessage(sachverhalt, ort)
-    sendThreemaMessage(message)
+    connection = Connection(
+        identity=os.getenv("THREEMA_GATEWAY_ID"),
+        secret=os.getenv("THREEMA_GATEWAY_ID_SECRET"),
+        verify_fingerprint=True,
+        blocking=True,
+    )
+    try:
+        with connection:
+            for user in users:
+                sendThreemaMessage(connection, user, message)
+    except GatewayError as exc:
+        print('Error:', exc)
