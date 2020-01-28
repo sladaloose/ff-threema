@@ -101,5 +101,11 @@ Zusatzinformation1c l
         self.assertEqual(message, """Achtung es brennt
 Schweinestall 7 10000 Bauernhof""")
 
+    def test_userlist_loaded_correctly(self):
+        filename = "./notification-user-list-test.txt"
+        users = threemaScript.loadUsers(filename)
+        self.assertEqual(users[0], "12345678")
+        self.assertEqual(users[1], "ABCDEFGH")
+
 if __name__ == '__main__':
     unittest.main()
