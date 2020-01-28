@@ -4,7 +4,7 @@ Script to push messages to Threema Gateway
 ## Local environment
 
 - Configure the environment variables, see `.env_template`; Make them available in a `.env`-file
-- Use Python3; if not available, install it (`sudo apt-get install python3 python3-pip`)
+- Use Python3; if not available, install it (on ubuntu `sudo apt-get install python3 python3-pip`)
 - Create virtual environment `python3 -m venv ff-threema`
 - Activate virtual environment `source ff-threema/bin/activate`
 - Run `pip install threema.gateway`
